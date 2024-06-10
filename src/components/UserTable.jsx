@@ -18,7 +18,7 @@ const UserTable = ({ submittedData }) => {
                   {submittedData.name}
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">
-                  {submittedData.lastName}
+                  {submittedData.lastname}
                 </td>
                 <td className="py-2 px-4 border-b border-gray-200">
                   {submittedData.position}

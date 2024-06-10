@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import NavBar from "./components/Navbar";
 import UserTable from "./components/UserTable";
@@ -9,14 +9,29 @@ import UserSector from "./components/UserSector.jsx";
 import InputForm from "./components/Form.jsx";
 import AdminSector from "./components/AdminSector.jsx";
 import Home from "./components/Home.jsx";
-
+import axios from "axios";
 function App() {
   const [formData, setFormData] = useState({
     name: "",
-    lastName: "",
+    lastname: "",
     position: "",
   });
   const [submittedData, setSubmittedData] = useState([]);
+  const [reload, setReload] = useState(false);
+  useEffect(() => {
+    const fetchEmployer = async () => {
+      try {
+        const response = await axios.get(
+          "https://jsd5-mock-backend.onrender.com/members"
+        );
+        setSubmittedData(response.data);
+      } catch (error) {
+        console.log("error");
+      }
+    };
+    fetchEmployer();
+  }, [reload]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -24,17 +39,31 @@ function App() {
       [name]: value,
     }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmittedData([...submittedData, formData]);
     setFormData({
       name: "",
-      lastName: "",
+      lastname: "",
       position: "",
     });
+    try {
+      const response = await axios.post(
+        "https://jsd5-mock-backend.onrender.com/members",
+        { formData }
+      );
+      // setEmployer();
+      setReload(!reload);
+    } catch (error) {
+      console.log("error");
+    }
   };
-  const handleDelete = (index) => {
-    setSubmittedData((prevData) => prevData.filter((_, i) => i !== index));
+  const handleDelete = async (id) => {
+    const afterDelete = await axios.delete(
+      `https://jsd5-mock-backend.onrender.com/member/${id}`,
+      { member_id: id }
+    );
+    setReload(!reload);
   };
   const router = createBrowserRouter([
     {

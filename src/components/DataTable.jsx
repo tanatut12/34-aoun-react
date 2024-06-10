@@ -22,11 +22,11 @@ const DataTable = ({ submittedData, handleDelete }) => {
           {submittedData.map((data, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap">{data.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{data.lastName}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{data.lastname}</td>
               <td className="px-6 py-4 whitespace-nowrap">{data.position}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <button
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDelete(data.id)}
                   className="text-red-500 hover:text-red-700 focus:outline-none"
                 >
                   Delete
