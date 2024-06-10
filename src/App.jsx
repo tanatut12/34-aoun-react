@@ -1,15 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import NavBar from "./components/Navbar";
 import UserTable from "./components/UserTable";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Owner from "./components/Owner.jsx";
 import UserSector from "./components/UserSector.jsx";
 import InputForm from "./components/Form.jsx";
 import AdminSector from "./components/AdminSector.jsx";
 import Home from "./components/Home.jsx";
 import axios from "axios";
+
 function App() {
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +18,7 @@ function App() {
   });
   const [submittedData, setSubmittedData] = useState([]);
   const [reload, setReload] = useState(false);
+
   useEffect(() => {
     const fetchEmployer = async () => {
       try {
@@ -26,7 +27,7 @@ function App() {
         );
         setSubmittedData(response.data);
       } catch (error) {
-        console.log("error");
+        console.error("Error fetching data:", error);
       }
     };
     fetchEmployer();
@@ -39,32 +40,35 @@ function App() {
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmittedData([...submittedData, formData]);
-    setFormData({
-      name: "",
-      lastname: "",
-      position: "",
-    });
     try {
       const response = await axios.post(
         "https://jsd5-mock-backend.onrender.com/members",
-        { formData }
+        formData
       );
-      // setEmployer();
+      setSubmittedData([...submittedData, response.data]);
+      setFormData({
+        name: "",
+        lastname: "",
+        position: "",
+      });
       setReload(!reload);
     } catch (error) {
-      console.log("error");
+      console.error("Error posting data:", error);
     }
   };
+
   const handleDelete = async (id) => {
-    const afterDelete = await axios.delete(
-      `https://jsd5-mock-backend.onrender.com/member/${id}`,
-      { member_id: id }
-    );
-    setReload(!reload);
+    try {
+      await axios.delete(`https://jsd5-mock-backend.onrender.com/member/${id}`);
+      setReload(!reload);
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
   };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -87,13 +91,12 @@ function App() {
     },
     {
       path: "/Owner",
-      element: <NavBar />,
-      children: [
-        {
-          path: "",
-          element: <Owner />,
-        },
-      ],
+      element: (
+        <div>
+          <NavBar />
+          <Owner />
+        </div>
+      ),
     },
     {
       path: "/Admin",
@@ -112,6 +115,7 @@ function App() {
       ),
     },
   ]);
+
   return <RouterProvider router={router} />;
 }
 

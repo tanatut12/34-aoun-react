@@ -26,7 +26,7 @@ const DataTable = ({ submittedData, handleDelete }) => {
               <td className="px-6 py-4 whitespace-nowrap">{data.position}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <button
-                  onClick={() => handleDelete(id)}
+                  onClick={() => handleDelete(data.id)}
                   className="text-red-500 hover:text-red-700 focus:outline-none"
                 >
                   Delete
